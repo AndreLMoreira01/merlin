@@ -1,0 +1,22 @@
+<!-- INíCIO do CONTEÚDO -->
+<section class="content-header">
+  <h1>
+    Livros Recomendados
+  </h1>
+</section>
+
+
+<section class="content">
+
+  <div class="row">
+          <div class="col-sm-6 col-xs-12" *ngFor="let book of books">
+
+            <app-book [book]="book"></app-book>
+          </div>
+
+
+        </div>
+
+</section>
+
+<!-- FIM  do CONTEÚDO -->
