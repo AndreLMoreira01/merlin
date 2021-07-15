@@ -1,68 +1,33 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { EMPTY, Observable } from 'rxjs';
+import { MERLIN } from '../app.api';
 import { Book } from './book/book.model';
+import { catchError, map } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BooksService {
 
-bk: Book[] = [
-  {
-    id: "bread-bakery",
-    name: "A Culpa É Das Estrelas",
-    category: "Romance",
-    delivery: "268PG",
-    pageNumbers: 8.9,
-    imagePath: "assets/img/books/aculpa.png"
-  },
-  {
-    id: "burger-house",
-    name: "A Batalha Do Apocalipse",
-    category: "Fantasia",
-    delivery: "586PG",
-    pageNumbers: 9.5,
-    imagePath: "assets/img/books/A-batalha-do-apocalipse.png"
-  },
 
-  {
-    id: "bread-bakery",
-    name: "Desventuras em Série",
-    category: "Ficção gótica",
-    delivery: "100PG",
-    pageNumbers: 10.00,
-    imagePath: "assets/img/books/desventuasemserie.png"
-  },
-  {
-    id: "burger-house",
-    name: "O Pequeno Príncipe",
-    category: "Conto de fadas",
-    delivery: "100PG",
-    pageNumbers: 9.9,
-    imagePath: "assets/img/books/opequenoprincipe.png"
-  },
+  constructor(private http: HttpClient,
+    private toastr: ToastrService) { }
 
-  {
-    id: "bread-bakery",
-    name: "Os Miséraveis ",
-    category: "Romance/Tragédia",
-    delivery: "210PG",
-    pageNumbers: 9.6,
-    imagePath: "assets/img/books/osmiseraveis.png"
-  },
-  {
-    id: "burger-house",
-    name: "Tartarugas até lá embaixo",
-    category: "Romance",
-    delivery: "268PG",
-    pageNumbers: 3.5,
-    imagePath: "assets/img/books/tartarugasatelaembaixo.png"
+  books(): Observable<Book[]>{
+    return this.http.get<Book[]>(`${MERLIN}/books`).pipe(
+      map(books => books),
+      catchError(erro => this.exibeErro(erro))
+    );
   }
 
-]
+  exibeErro(e: any): Observable<any>{
+    this.exibirMensagem('ERRO!!!', 'Não foi possível realizar a operação!!', 'toast-error');
+  return EMPTY
+  }
 
-  constructor() { }
-
-  books() : Book[]{
-    return this.bk;
+  exibirMensagem(titulo: string, mensagem: string, tipo: string ):void {
+    this.toastr.show(mensagem, titulo, {closeButton: true, progressBar: true}, tipo)
   }
 }
